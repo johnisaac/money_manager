@@ -1,44 +1,38 @@
 // Place all the behaviors and hooks related to the matching controller here.
 // All this logic will automatically be available in application.js.
 
-$("#add_transaction").click( function(e){
-  var newLi = "<li class='expense clearfix'><input type='text' class='date grid_4' placeholder='Transaction Date'></input><input type='text' class='amount grid_4' placeholder='Transaction Amount'> </input><input type='text' class='reason grid_10' placeholder='What was the transaction'></input><a href='#' class='delete'> X</a></li>";
-  $("#expenses li.header").after( newLi );
-  
-  e.preventDefault();
-  return false;
-});
-
-$("li.expense").live("mouseenter", function(e){  
-  $(e.target).find( "a.delete:first" ).show();
-  e.preventDefault();
-  return false;
-}).live("mouseleave", function(e){
-  var target;  
-  target = $(e.target).hasClass("expense")?  $(e.target):  $(e.target).parents("li.expense");
-
-  $(target).find( "a.delete:first" ).hide();
-  
-  e.preventDefault();
-  return false;
-});
-
-$("li.expense a.delete").live("click", function(e){
-  var next = $(e.target).parent().next();
-  $(e.target).parents("li.expense:first").remove();
-  $(next).find("a.delete").show();
-  e.preventDefault();
-  return false;
-});
-
-$("li.expense input[type='text']").live("blur", function(e){
-  //update the expense here.
-  console.log("update the expense here");
-});
-/*
-E = {
+window.E = {
   expenses: [],
-  heading: "<li id='heading' class='grid_24'></li>",
+  headerTemplate: "<header id='header' class='clearfix'>\
+     <h2>October 2011 Balance Summary</h2>\
+     <ul id='balance_sheet' class='grid_17'>\
+       <li id='earnings'>\
+         <span class='label grid_3'>Earnings:</span><span class='value'> 30000</span>\
+       </li>\
+       <li id='expense_label'>\
+         <span class='label grid_3'>Expenses:</span><span class='value'> 10000</span>\
+       </li>\
+       <li id='net_amount'>\
+         <span class='label grid_3'>Net Amount:</span><span class='value'> 20000</span>\
+       </li>\
+     </ul>\
+     <a href='#' id='add_transaction' class='grid_3'>\
+         Add Transaction\
+     </a>\
+   </header>",
+  
+  expenseListHeading: "<li class='header clearfix'>\
+     <span class='date grid_4'>\
+       Spent on\
+     </span>\
+     <span class='amount grid_4'>\
+       Amount(in Rs)\
+     </span>\
+     <span class='reason grid_10'>\
+       Reason\
+     </span>\
+   </li>",
+   
   splitDate: function(date){
     var newDate;
     try{
@@ -50,17 +44,57 @@ E = {
   },
   
   expenseTemplate: function(data){
-    return "<li id='expense_"+data["id"]+"' class='expense clearfix grid_24'><input type='text' class='date grid_5 clearfix'>"+this.splitDate( data["spent_on"] )+"</input><input type='text' class='clearfix amount grid_5'>"+data['amount']+"</input><input type='text' class='clearfix reason grid_20'>"+data["reason"]+"</input>"+"</li>";
+    return "<li id='expense_"+data["id"]+"' class='expense clearfix'><input type='text' class='date grid_4' value='"+this.splitDate( data["spent_on"] )+"'><input type='text' class='amount grid_4' value='"+data['amount']+"'><input type='text' class='reason grid_10' value='"+data["reason"]+"'>"+" <a href='#' class='delete'></a></li>";
   },
   
   init: function(){
-    $("body").append("<ul id='expenses' class='grid_24'></ul>");
-    //append Expense Heading
-    $("body").append( E.heading);
+    $("div.container_24:first").append( E.headerTemplate );
+    $("div.container_24:first").append("<ul id='expenses' class='grid_21'></ul>");
+    $("#expenses").append( E.expenseListHeading);
+    
+    // register uiEvents
+    $("#add_transaction").live("click", this.uiEvents.addTransaction );
+    $("li.expense a.delete").live("click", this.uiEvents.removeTransaction );
+    $("li.expense input[type='text'].amount").live("blur", this.uiEvents.checkAmount );
+    $("li.expense").live("mouseenter", this.uiEvents.showDeleteLink).live("mouseleave", this.uiEvents.hideDeleteLink);
     E.loadExpenses();
   },
   
-  events: function(){
+  uiEvents: {
+    addTransaction: function(e){
+      var newLi = "<li class='expense clearfix'><input type='text' class='date grid_4' placeholder='Transaction Date'></input><input type='text' class='amount grid_4' placeholder='Transaction Amount'> </input><input type='text' class='reason grid_10' placeholder='What was the transaction'></input><a href='#' class='delete'></a></li>";
+      $("#expenses li.header").after( newLi );
+
+      e.preventDefault();
+      return false;
+    },
+    removeTransaction: function(e){
+      var next = $(e.target).parent().next();
+      $(e.target).parents("li.expense:first").remove();
+      $(next).find("a.delete").show();
+      e.preventDefault();
+      return false;
+    },
+    checkAmount: function(e){
+      console.log("update the expense here");
+      var errorMessage = "<span class='invalid_entry'><span class='arrow-border'></span><span class='text'>Amount needs to be a number like 1000</span></span>";
+      $(e.target).after(errorMessage);
+      $(e.target).parents("li.expense").children("span.invalid_entry").show();
+    },
+    showDeleteLink: function(e){
+      $(e.target).find( "a.delete:first" ).show();
+      e.preventDefault();
+      return false;
+    },
+    hideDeleteLink: function(e){
+      var target;  
+      target = $(e.target).hasClass("expense")?  $(e.target):  $(e.target).parents("li.expense");
+
+      $(target).find( "a.delete:first" ).hide();
+
+      e.preventDefault();
+      return false;
+    }
   },
   
   loadExpenses: function(){
@@ -92,4 +126,4 @@ E = {
 }
 
 E.init();
-*/
+
