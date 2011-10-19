@@ -23,7 +23,6 @@ $("li.expense").live("mouseenter", function(e){
   return false;
 });
 
-
 $("li.expense a.delete").live("click", function(e){
   var next = $(e.target).parent().next();
   $(e.target).parents("li.expense:first").remove();

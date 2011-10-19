@@ -30,15 +30,43 @@ ul#expenses{
       float: right;
       display: none;
       text-decoration: none;
-      margin-top: -2px;
-      padding: 3px 7px;
-      background-color: rgba(205,92,92, 0.9);
-      color: white;
-      -webkit-border-radius: 10px;
-      -moz-border-radius: 10px;
-      -o-border-radius: 10px;
-      border-radius: 10px;
+      width: 24px;
+      min-width: 24px;
+      max-width: 24px;
+      height: 25px;
+      min-height: 25px;
+      max-height: 25px;
+      background-image: url("/assets/delete.png");
+      background-repeat: no-repeat;
+      opacity: 0.75;
+      position: relative;
+      background-size: 85%;
+      background-position: 2px;
+      top: -2px;
+      -webkit-transition-property: background-size, opacity;
+      -webkit-transition-duration: .1s;
+      -webkit-transition-function: ease-out;
+      -moz-transition-property: background-size, opacity;
+      -moz-transition-duration: .1s;
+      -moz-transition-function: ease-out;
+      -o-transition-property: background-size, opacity;
+      -o-transition-duration: .1s;
+      -o-transition-function: ease-out;
+      transition-property: background-size, opacity;
+      transition-duration: .1s;
+      transition-function: ease-out;
     } 
+    
+    a.delete:hover{
+      background-color: white;
+      background-size: 100%;
+      background-position: 0px;
+      opacity: 0.85;
+    }
+    
+    a.delete:active{
+      opacity:1.0;
+    }
   }
   
   li:hover{
