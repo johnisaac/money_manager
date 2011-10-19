@@ -69,8 +69,28 @@ window.E = {
       return false;
     },
     removeTransaction: function(e){
-      var next = $(e.target).parent().next();
-      $(e.target).parents("li.expense:first").remove();
+      var next = $(e.target).parent().next(),
+          parent = $(e.target).parents("li.expense:first"),
+          id;
+      if( $(parent).attr("id") !== undefined ){
+        id = $(parent).attr("id").split("_")[1];
+        $.ajax({
+          url: "/expenses/"+id,
+          type:"DELETE",
+          success: function(data){
+             $(parent).remove();
+          },
+          failure: function(data){
+            console.log("there is an failure while removing the transaction");
+          },
+          error: function(data){
+            console.log("there is an error while removing the transaction");          
+          }
+        });
+      }else{
+         $(parent).remove();
+      }
+      
       $(next).find("a.delete").show();
       e.preventDefault();
       return false;
@@ -89,6 +109,8 @@ window.E = {
         $(e.target).parents("li.expense").children("span.invalid_entry").show();
       } else{
         //update the content
+        $(e.target).parents("li.expense").children("span.invalid_entry").remove();
+        
         $.ajax({
           url:"/expenses/"+id,
           type: "PUT",
