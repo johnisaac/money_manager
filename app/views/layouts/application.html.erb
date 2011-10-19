@@ -3,12 +3,81 @@
 <head>
   <title>Money</title>
   <%= stylesheet_link_tag    "application" %>
-  <%= javascript_include_tag "application" %>
   <%= csrf_meta_tags %>
 </head>
 <body>
-
+<div class='container_24'>
+  <header id='header' class='clearfix'>
+    <h2>October 2011 Balance Summary</h2>
+    <ul id='balance_sheet' class='grid_17'>
+      <li id='earnings'>
+        <span class='label grid_3'>Earnings:</span><span class='value'> 30000</span>
+      </li>
+      <li id='expense_label'>
+        <span class='label grid_3'>Expenses:</span><span class='value'> 10000</span>
+      </li>
+      <li id='net_amount'>
+        <span class='label grid_3'>Net Amount:</span><span class='value'> 20000</span>
+      </li>
+    </ul>
+    <a href='#' id='add_transaction' class='grid_3'>
+        Add Transaction
+    </a>
+  </header>
+  <ul id='expenses' class='grid_21'>
+    <li class='header clearfix'>
+      <span class='date grid_4'>
+        Spent on
+      </span>
+      <span class='amount grid_4'>
+        Amount(in Rs)
+      </span>
+      <span class='reason grid_10'>
+        Reason
+      </span>
+    </li>
+    <li class='expense clearfix'>
+      <input type='text' class='date grid_4' value='Oct 10, 2011'>
+      <input type='text' class='amount grid_4' value='1000'>
+      <input type='text' class='reason grid_10' value='Broadband bill'>
+      <a href='#' class='delete'> X</a>
+    </li>
+    <li class='expense clearfix'>
+      <input type='text' class='date grid_4' value='Oct 11, 2011'>
+      <input type='text' class='amount grid_4' value='100'>
+      <input type='text' class='reason grid_10' value='Mobile bill'>
+      <a href='#' class='delete'> X</a>
+    </li>
+    <li class='expense clearfix'>
+      <input type='text' class='date grid_4' value='Oct 14, 2011'>
+      <input type='text' class='amount grid_4' value='600'>
+      <input type='text' class='reason grid_10' value='Design of Everyday Things book'>
+      <a href='#' class='delete'> X</a>
+    </li>
+    <li class='expense clearfix'>
+      <input type='text' class='date grid_4' value='Oct 14, 2011'>
+      <input type='text' class='amount grid_4' value='500'>
+      <input type='text' class='reason grid_10' value='New Shirt'>
+      <a href='#' class='delete'> X</a>
+    </li>
+    <li class='expense clearfix'>
+      <input type='text' class='date grid_4' value='Oct 18, 2011'>
+      <input type='text' class='amount grid_4' value='400'>
+      <input type='text' class='reason grid_10' value='ATM Withdrawal bill'>
+      <a href='#' class='delete'> X</a>
+    </li>
+  </ul>
+  <!--
+  
 <%= yield %>
+-->
+<%= javascript_include_tag "application" %>
+<script>
+  if( typeof jQuery == "undefined"){
+    // load cdn here
+  }
+</script>
+</div>
 
 </body>
 </html>

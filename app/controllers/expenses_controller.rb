@@ -2,12 +2,7 @@ class ExpensesController < ApplicationController
   # GET /expenses
   # GET /expenses.json
   def index
-    @expenses = Expense.all
-
-    respond_to do |format|
-      format.html # index.html.erb
-      format.json { render json: @expenses }
-    end
+ 
   end
 
   # GET /expenses/1
@@ -79,5 +74,13 @@ class ExpensesController < ApplicationController
       format.html { redirect_to expenses_url }
       format.json { head :ok }
     end
+  end
+  
+  def get_expenses
+    @expenses = Expense.all
+
+     respond_to do |format|
+       format.html { render :json => @expenses }
+     end
   end
 end
