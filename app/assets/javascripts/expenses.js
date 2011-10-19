@@ -43,8 +43,24 @@ window.E = {
     }
   },
   
+  today:function(){
+    var d = new Date(),
+        date =[];
+
+    date.push( d.getFullYear() );    
+    date.push( d.getMonth() );
+    date.push( d.getDate() );
+    
+    return date.join("-");
+  },
+  
   expenseTemplate: function(data){
-    return "<li id='expense_"+data["id"]+"' class='expense clearfix'><input type='text' class='date grid_4' value='"+this.splitDate( data["spent_on"] )+"'><input type='text' class='amount grid_4' value='"+data['amount']+"'><input type='text' class='reason grid_10' value='"+data["reason"]+"'>"+" <a href='#' class='delete'></a></li>";
+    if( data["id"] !== undefined ){
+      console.log( data["spent_on"] );
+      return "<li id='expense_"+data["id"]+"' class='expense clearfix'><input type='text' class='date grid_4' value='"+this.splitDate( data["spent_on"] )+"'><input type='text' class='amount grid_4' value='"+data['amount']+"'><input type='text' class='reason grid_10' value='"+data["reason"]+"'>"+" <a href='#' class='delete'></a></li>";
+    } else{
+      return "<li class='expense clearfix'><input type='text' class='date grid_4' value='"+this.splitDate( data["spent_on"] )+"'><input type='text' class='amount grid_4' value='"+data['amount']+"'><input type='text' class='reason grid_10' value='"+data["reason"]+"'>"+" <a href='#' class='delete'></a></li>";      
+    }
   },
   
   init: function(){
@@ -62,9 +78,33 @@ window.E = {
   
   uiEvents: {
     addTransaction: function(e){
-      var newLi = "<li class='expense clearfix'><input type='text' class='date grid_4' placeholder='Transaction Date'></input><input type='text' class='amount grid_4' placeholder='Transaction Amount'> </input><input type='text' class='reason grid_10' placeholder='What was the transaction'></input><a href='#' class='delete'></a></li>";
+      var newExpense = {
+        "spent_on": E.today(),
+        "amount"  : 0.0,
+        "reason"  : "" 
+      };
+      
+      console.log( newExpense );
+      
+      var newLi = E.expenseTemplate( newExpense );
+      
+      console.log( newLi );
       $("#expenses li.header").after( newLi );
-
+      // create a transaction with today's date and amount equal 0.0
+      
+      $.ajax({
+        url: "/expenses/",
+        type: "POST",
+        data:"[expense][spent_on]="+newExpense.spent_on+"&[expense][amount]="+newExpense.amount,
+        dataType: "json",
+        success: function(data){
+          $("#expenses li.expense:first").attr("id","expense_"+data["id"]);
+        }, 
+        failure: function(data){
+          console.log( data );
+        }
+      });
+      
       e.preventDefault();
       return false;
     },

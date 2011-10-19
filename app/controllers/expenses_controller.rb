@@ -36,11 +36,12 @@ class ExpensesController < ApplicationController
   # POST /expenses.json
   def create
     @expense = Expense.new(params[:expense])
-
+    
     respond_to do |format|
-      if @expense.save
+      if @expense.save!
         format.html { redirect_to @expense, notice: 'Expense was successfully created.' }
-        format.json { render json: @expense, status: :created, location: @expense }
+        format.json { render :json => @expense, :status => 200, location: @expense }
+        format.js{ render :json => @expense, :status => 200 }
       else
         format.html { render action: "new" }
         format.json { render json: @expense.errors, status: :unprocessable_entity }
@@ -77,7 +78,7 @@ class ExpensesController < ApplicationController
   end
   
   def get_expenses
-    @expenses = Expense.all
+    @expenses = Expense.order("updated_at desc").all
 
      respond_to do |format|
        format.html { render :json => @expenses }
