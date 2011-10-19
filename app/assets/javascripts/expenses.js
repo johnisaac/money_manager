@@ -55,7 +55,7 @@ window.E = {
     // register uiEvents
     $("#add_transaction").live("click", this.uiEvents.addTransaction );
     $("li.expense a.delete").live("click", this.uiEvents.removeTransaction );
-    $("li.expense input[type='text'].amount").live("blur", this.uiEvents.checkAmount );
+    $("li.expense input[type='text']").live("blur", this.uiEvents.checkAmount );
     $("li.expense").live("mouseenter", this.uiEvents.showDeleteLink).live("mouseleave", this.uiEvents.hideDeleteLink);
     E.loadExpenses();
   },
@@ -77,9 +77,31 @@ window.E = {
     },
     checkAmount: function(e){
       console.log("update the expense here");
-      var errorMessage = "<span class='invalid_entry'><span class='arrow-border'></span><span class='text'>Amount needs to be a number like 1000</span></span>";
-      $(e.target).after(errorMessage);
-      $(e.target).parents("li.expense").children("span.invalid_entry").show();
+      var amount = $(e.target).attr("value"),
+          id = $(e.target).parents("li.expense:first").attr("id").split("_")[1];
+          reason = $("#expense_"+id).find("input.reason:first").attr("value");
+          date = $("#expense_"+id).find("input.date:first").attr("value");
+      console.log( amount );
+    
+      if ( isNaN(parseFloat(amount) ) && ( $(e.target).hasClass("amount") ) ){
+        var errorMessage = "<span class='invalid_entry'><span class='arrow-border'></span><span class='text'>Amount needs to be a number like 1000</span></span>";
+        $(e.target).after(errorMessage);
+        $(e.target).parents("li.expense").children("span.invalid_entry").show();
+      } else{
+        //update the content
+        $.ajax({
+          url:"/expenses/"+id,
+          type: "PUT",
+          data:"[expense][reason]="+reason+"&[expense][spent_on]="+date+"&[expense][amount]="+amount,
+          success: function(data){
+            console.log("success");
+          },
+          failure: function(data){
+            console.log("failure");
+          }
+        });
+      }
+      
     },
     showDeleteLink: function(e){
       $(e.target).find( "a.delete:first" ).show();
