@@ -73,7 +73,7 @@ window.E = {
         date =[];
 
     date.push( d.getFullYear() );    
-    date.push( d.getMonth() );
+    date.push( d.getMonth()+1 );
     date.push( d.getDate() );
     
     return date.join("-");
@@ -242,89 +242,98 @@ window.E = {
 
 E.init();
 //$("input.date").calendar();
-    
-$("input.date").live("focus", function(e){
-  // find out which month
-  // find out which year
-  // find out on what day does the month starts
-  // find out how many days does the current month has.  
-  var currentDay, currentMonth, currentYear, currentDate, dates, day, numOfBlankDays, firstDate;
-  
-  currentDate = $(e.target).attr("value").split("-");
-  currentDay = currentDate[0];
-  currentMonth = currentDate[1]-1;
-  currentYear = currentDate[2];
-  currentDate = new Date( currentDate[1]+"-"+currentDate[0]+"-"+currentDate[2] );
-  firstDate = new Date( ( currentMonth+1)+"-1-"+currentYear);
-  
-  console.log( currentDate );
-  console.log( firstDate );
-  
-  numOfBlankDays = E.day_of_the_week[ firstDate.toString().split(" ")[0] ];
-  console.log( firstDate.toString().split(" ")[0] );
-  console.log( E.day_of_the_week[ firstDate.toString().split(" ")[0] ]  );
-  console.log( numOfBlankDays );
-  numOfMonthDays = 0;
-  
-  if( E.isLeapYear(currentYear) && ( currentMonth === 1 ) ){
-    numOfMonthDays = parseInt(E.num_of_days_in_the_month[currentMonth]) + 1;
-  } else {
-    numOfMonthDays = E.num_of_days_in_the_month[currentMonth];
-  }
 
-  $(e.target).after("<div class='calendar'><a href='#' class='close'>X</a><div class='cal_header'>"+E.months[currentMonth]+" "+currentYear+"</div><div class='dates'></div><div class='cal_footer'>Go to Today</div></div>");  
-  dates = $(e.target).next("div.calendar:first").children("div.dates:first");
-  day = 1;
-  month =[];  
+/*
+$("input.date").live("blur", function(e){
+  var el = $(e.target).next("div.calendar:first");
+  console.log(el);
   
-  while( day <= numOfBlankDays){
-    month.push("<a href='#' class='day'></a>");
-    day = day + 1;
+  if( el !== null ){
+    $(el).hide();
   }
-  
-  for( day = 1; day <= numOfMonthDays; day++ ){
-    if( day === parseInt( currentDay) ){
-      month.push("<a href='#' class='day today'>"+day+"</a>");
-    } else{
-      month.push("<a href='#' class='day'>"+day+"</a>");
-    }
-  }
-
-  $(dates).html( month.join(" ") );
-});
-
-$("a.day").live("click", function(e){
-  var selectedDay, el, header, selectedYear, selectedMonth, currentDateEl;  
-  selectedDay = $(e.target).html();
-  el = $(e.target).parents("div.calendar:first");
-  header = $(el).children("div.cal_header:first").html().split(" ");
-  selectedYear = header[1];
-  selectedMonth = E.months_in_a_year[ header[0] ];
-  currentDateEl = $(el).prev("input.date:first");
-  $(currentDateEl).attr("value",[selectedDay, selectedMonth, selectedYear].join("-"));
-  $(el).remove();
-  
-  $(currentDateEl).trigger("blur");
-  
   e.preventDefault();
   return false;
 });
-
-$("a.close").live("click", function(e){
-  var el;
-  
-  el = $(e.target).parents("div.calendar:first")
-  $(el).remove();
-  
-  e.preventDefault();
-  return false;  
-});
-
+*/
 });
 
 $.fn.calendar = function(e){
   var that = $(this);
-  console.log( $(that) );
-
   
+  $(that).live("focus", function(e){
+    // find out which month
+    // find out which year
+    // find out on what day does the month starts
+    // find out how many days does the current month has.  
+    var currentDay, currentMonth, currentYear, currentDate, dates, day, numOfBlankDays, firstDate;
+
+    currentDate = $(e.target).attr("value").split("-");
+    currentDay = currentDate[0];
+    currentMonth = currentDate[1]-1;
+    currentYear = currentDate[2];
+    currentDate = new Date( currentDate[1]+"-"+currentDate[0]+"-"+currentDate[2] );
+    firstDate = new Date( ( currentMonth+1)+"-1-"+currentYear);
+
+    console.log( currentDate );
+    console.log( firstDate );
+
+    numOfBlankDays = E.day_of_the_week[ firstDate.toString().split(" ")[0] ];
+    console.log( firstDate.toString().split(" ")[0] );
+    console.log( E.day_of_the_week[ firstDate.toString().split(" ")[0] ]  );
+    console.log( numOfBlankDays );
+    numOfMonthDays = 0;
+
+    if( E.isLeapYear(currentYear) && ( currentMonth === 1 ) ){
+      numOfMonthDays = parseInt(E.num_of_days_in_the_month[currentMonth]) + 1;
+    } else {
+      numOfMonthDays = E.num_of_days_in_the_month[currentMonth];
+    }
+
+    $(e.target).after("<div class='calendar'><a href='#' class='close'>X</a><div class='cal_header'>"+E.months[currentMonth]+" "+currentYear+"</div><div class='dates'></div><div class='cal_footer'>Go to Today</div></div>");  
+    dates = $(e.target).next("div.calendar:first").children("div.dates:first");
+    day = 1;
+    month =[];  
+
+    while( day <= numOfBlankDays){
+      month.push("<a href='#' class='day'></a>");
+      day = day + 1;
+    }
+
+    for( day = 1; day <= numOfMonthDays; day++ ){
+      if( day === parseInt( currentDay) ){
+        month.push("<a href='#' class='day today'>"+day+"</a>");
+      } else{
+        month.push("<a href='#' class='day'>"+day+"</a>");
+      }
+    }
+
+    $(dates).html( month.join(" ") );
+  });
+
+  $("div.calendar a.day").live("click", function(e){
+    var selectedDay, el, header, selectedYear, selectedMonth, currentDateEl;  
+    selectedDay = $(e.target).html();
+    el = $(e.target).parents("div.calendar:first");
+    header = $(el).children("div.cal_header:first").html().split(" ");
+    selectedYear = header[1];
+    selectedMonth = E.months_in_a_year[ header[0] ];
+    currentDateEl = $(el).prev("input.date:first");
+    $(currentDateEl).attr("value",[selectedDay, selectedMonth, selectedYear].join("-"));
+    $(el).remove();
+
+    $(currentDateEl).trigger("blur");
+
+    e.preventDefault();
+    return false;
+  });
+
+  $("div.calendar  a.close").live("click", function(e){
+    var el;
+
+    el = $(e.target).parents("div.calendar:first")
+    $(el).remove();
+
+    e.preventDefault();
+    return false;  
+  });
 };
