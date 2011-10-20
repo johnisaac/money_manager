@@ -179,6 +179,23 @@ div.calendar{
   border-right: none;
   border-bottom: none;
   
+  a:visited{
+    color: black
+  }
+  
+  a.close{
+    float: right;
+    position: relative;
+    top: -20px;
+    left: 8px;
+    text-decoration: none;
+    background-color: darkred;
+    padding: 2px 5px;
+    color: white;
+    font-weight: bold;
+    -webkit-border-radius: 15px;
+  }
+  
   div.cal_header{
     border-bottom:1px solid black;
     border-right: 1px solid black;
@@ -192,8 +209,9 @@ div.calendar{
     margin: 0px;
     padding: 0px;
     
-    span.day{
+    a.day{
       width: 30px;
+      text-decoration: none;
       float: left;
       min-width: 29px;
       text-align: center;
@@ -202,7 +220,12 @@ div.calendar{
       border-bottom: 1px solid black;
     }
     
-    span.today{
+    a.day:hover{
+      background-color: white;
+      color: black;
+    }
+    
+    a.today{
       width: 30px;
       float: left;
       min-width: 29px;

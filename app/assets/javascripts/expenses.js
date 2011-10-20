@@ -13,6 +13,20 @@ window.E = {
     "Fri":5,
     "Sat":6
   },
+  months_in_a_year:{
+    "Jan":1,
+    "Feb":2,
+    "Mar":3,
+    "Apr":4,
+    "May":5,
+    "June":6,
+    "July":7,
+    "Aug":8,
+    "Sept":9,
+    "Oct":10,
+    "Nov":11,
+    "Dec":12
+  },
   num_of_days_in_the_month:["31","28","31","30","31","30","31","31","30","31","30","31"],
   headerTemplate: "<header id='header' class='clearfix'>\
      <h2>October 2011 Balance Summary</h2>\
@@ -232,6 +246,8 @@ $("input.date").live("focus", function(e){
   // find out which year
   // find out on what day does the month starts
   // find out how many days does the current month has.
+  $(this).addClass("selected");
+  
   var currentDay, currentMonth, currentYear, currentDate,dates, day, numOfBlankDays;
   
   currentDate = $(e.target).attr("value").split("-");
@@ -249,29 +265,49 @@ $("input.date").live("focus", function(e){
     numOfMonthDays = E.num_of_days_in_the_month[currentMonth];
   }
 
-  $(e.target).after("<div class='calendar'><div class='cal_header'>"+E.months[currentMonth]+" "+currentYear+"</div><div class='dates'></div><div class='cal_footer'>Go to Today</div></div>");  
+  $(e.target).after("<div class='calendar'><a href='#' class='close'>X</a><div class='cal_header'>"+E.months[currentMonth]+" "+currentYear+"</div><div class='dates'></div><div class='cal_footer'>Go to Today</div></div>");  
   dates = $(e.target).next("div.calendar:first").children("div.dates:first");
   day = 0;
   month =[];  
   
   while( day < numOfBlankDays){
-    month.push("<span class='day'></span>");
+    month.push("<a href='#' class='day'></a>");
     day = day + 1;
   }
   
   for( day = 1; day <= numOfMonthDays; day++ ){
     if( day === parseInt( currentDay) ){
-      month.push("<span class='day today'>"+day+"</span>");
+      month.push("<a href='#' class='day today'>"+day+"</a>");
     } else{
-      month.push("<span class='day'>"+day+"</span>");
+      month.push("<a href='#' class='day'>"+day+"</a>");
     }
   }
 
   $(dates).html( month.join(" ") );
 });
 
-$("input.date").live("blur", function(e){
-  $(e.target).next("div.calendar").remove();
+$("a.day").live("click", function(e){
+  var selectedDay, el, header, selectedYear, selectedMonth, currentDateEl;  
+  selectedDay = $(e.target).html();
+  el = $(e.target).parents("div.calendar:first");
+  header = $(el).children("div.cal_header:first").html().split(" ");
+  selectedYear = header[1];
+  selectedMonth = E.months_in_a_year[ header[0] ];
+  currentDateEl = $(el).prev("input.date:first");
+  $(currentDateEl).attr("value",[selectedDay, selectedMonth, selectedYear].join("-"));
+  $(el).remove();
+  e.preventDefault();
+  return false;
+});
+
+$("a.close").live("click", function(e){
+  var el;
+  
+  el = $(e.target).parents("div.calendar:first")
+  $(el).remove();
+  
+  e.preventDefault();
+  return false;  
 });
 
 });
