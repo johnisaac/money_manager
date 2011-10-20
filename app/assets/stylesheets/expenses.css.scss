@@ -166,3 +166,53 @@ ul#expenses{
     color: white;
   }
 }
+
+
+div.calendar{
+  width: 217px;
+  height: 151px;
+  background-color: #FFFFFF;
+  position: absolute;
+  top: 30px;
+  z-index: 1000;
+  border: 1px solid black;
+  border-right: none;
+  border-bottom: none;
+  
+  div.cal_header{
+    border-bottom:1px solid black;
+    border-right: 1px solid black;
+    width: 216px;
+    height:25px;
+    background-color: #FFFFFF;
+    text-align: center;
+  }
+  
+  div.dates{
+    margin: 0px;
+    padding: 0px;
+    
+    span.day{
+      width: 30px;
+      float: left;
+      min-width: 29px;
+      text-align: center;
+      min-height: 24px;
+      border-right: 1px solid black;
+      border-bottom: 1px solid black;
+    }
+    
+  }
+  
+  div.cal_footer{
+    margin: 0px;
+    padding: 0px;
+    margin-left: -1px;
+    clear: both;
+    width: 217px;
+    height: 25px;
+    min-height: 25px;
+    text-align: center;
+    border: 1px solid black;
+  }
+}

@@ -1,6 +1,6 @@
 // Place all the behaviors and hooks related to the matching controller here.
 // All this logic will automatically be available in application.js.
-
+$(document).ready( function(){
 window.E = {
   expenses: [],
   headerTemplate: "<header id='header' class='clearfix'>\
@@ -83,14 +83,10 @@ window.E = {
         "amount"  : 0.0,
         "reason"  : "" 
       };
-      
-      console.log( newExpense );
-      
+            
       var newLi = E.expenseTemplate( newExpense );
       
-      console.log( newLi );
       $("#expenses li.header").after( newLi );
-      // create a transaction with today's date and amount equal 0.0
       
       $.ajax({
         url: "/expenses/",
@@ -206,8 +202,38 @@ window.E = {
       E.expenses.push( expense );
       $("#expenses").append( E.expenseTemplate(expense) );
     }
+  },
+  
+  showCalendar: function(){
+    
   }
 }
 
 E.init();
+//$("input.date").calendar();
+    
+$("input.date").live("focus", function(e){
+  $(e.target).after("<div class='calendar'><div class='cal_header'> Oct 2011 </div><div class='dates'></div><div class='cal_footer'>Go to Today</div></div>");  
+  var dates = $(e.target).next("div.calendar:first").children("div.dates:first");
+  var day = 1,frag;
+  month =[];  
+  
+  for( day = 1; day <= 31; day++ ){
+    month.push("<span class='day'>"+day+"</span>");
+  }
 
+  $(dates).html( month.join(" ") );
+});
+
+$("input.date").live("blur", function(e){
+  $(e.target).next("div.calendar").remove();
+});
+
+});
+
+$.fn.calendar = function(e){
+  var that = $(this);
+  console.log( $(that) );
+
+  
+};
