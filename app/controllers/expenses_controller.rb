@@ -60,7 +60,7 @@ class ExpensesController < ApplicationController
         format.json { head :ok }
       else
         format.html { render action: "edit" }
-        format.json { render json: @expense.errors, status: :unprocessable_entity }
+        format.json { render json: @expense, status: :unprocessable_entity }
       end
     end
   end

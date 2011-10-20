@@ -14,15 +14,15 @@ window.E = {
     "Sat":6
   },
   months_in_a_year:{
-    "Jan":1,
-    "Feb":2,
-    "Mar":3,
-    "Apr":4,
-    "May":5,
-    "June":6,
-    "July":7,
-    "Aug":8,
-    "Sept":9,
+    "Jan":"01",
+    "Feb":"02",
+    "Mar":"03",
+    "Apr":"04",
+    "May":"05",
+    "June":"06",
+    "July":"07",
+    "Aug":"08",
+    "Sept":"09",
     "Oct":10,
     "Nov":11,
     "Dec":12
@@ -157,11 +157,12 @@ window.E = {
       return false;
     },
     checkAmount: function(e){
+      console.log(e);
       console.log("update the expense here");
-      var amount = $(e.target).attr("value"),
-          id = $(e.target).parents("li.expense:first").attr("id").split("_")[1];
+      var id = $(e.target).parents("li.expense:first").attr("id").split("_")[1];
           reason = $("#expense_"+id).find("input.reason:first").attr("value");
           date = $("#expense_"+id).find("input.date:first").attr("value");
+          amount = $("#expense_"+id).find("input.amount:first").attr("value");
       console.log( amount );
     
       if ( isNaN(parseFloat(amount) ) && ( $(e.target).hasClass("amount") ) ){
@@ -176,6 +177,7 @@ window.E = {
           url:"/expenses/"+id,
           type: "PUT",
           data:"[expense][reason]="+reason+"&[expense][spent_on]="+date+"&[expense][amount]="+amount,
+          dataType: "json",
           success: function(data){
             console.log("success");
           },
@@ -296,6 +298,9 @@ $("a.day").live("click", function(e){
   currentDateEl = $(el).prev("input.date:first");
   $(currentDateEl).attr("value",[selectedDay, selectedMonth, selectedYear].join("-"));
   $(el).remove();
+  
+  $(currentDateEl).trigger("blur");
+  
   e.preventDefault();
   return false;
 });
