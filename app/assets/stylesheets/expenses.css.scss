@@ -201,16 +201,16 @@ div.calendar{
       border-right: 1px solid black;
       border-bottom: 1px solid black;
     }
-    
   }
   
   div.cal_footer{
-    margin: 0px;
+    margin: -1px 0px 0px -1px;
     padding: 0px;
-    margin-left: -1px;
     clear: both;
     width: 217px;
     height: 25px;
+    position: relative;
+    top: -1px;
     min-height: 25px;
     text-align: center;
     border: 1px solid black;

@@ -3,6 +3,17 @@
 $(document).ready( function(){
 window.E = {
   expenses: [],
+  months : [ "Jan", "Feb", "Mar", "Apr", "May", "June", "July", "Aug", "Sept", "Oct", "Nov", "Dec" ],
+  day_of_the_week: {
+    "Sun":0,
+    "Mon":1,
+    "Tue":2,
+    "Wed":3,
+    "Thu":4,
+    "Fri":5,
+    "Sat":6
+  },
+  num_of_days_in_the_month:["31","28","31","30","31","30","31","31","30","31","30","31"],
   headerTemplate: "<header id='header' class='clearfix'>\
      <h2>October 2011 Balance Summary</h2>\
      <ul id='balance_sheet' class='grid_17'>\
@@ -204,7 +215,7 @@ window.E = {
     }
   },
   
-  showCalendar: function(){
+  getDay: function(){
     
   }
 }
@@ -213,13 +224,31 @@ E.init();
 //$("input.date").calendar();
     
 $("input.date").live("focus", function(e){
-  $(e.target).after("<div class='calendar'><div class='cal_header'> Oct 2011 </div><div class='dates'></div><div class='cal_footer'>Go to Today</div></div>");  
-  var dates = $(e.target).next("div.calendar:first").children("div.dates:first");
-  var day = 1,frag;
+  // find out which month
+  // find out which year
+  // find out on what day does the month starts
+  // find out how many days does the current month has.
+  var currentDay, currentMonth, currentYear, currentDate,dates, day, numOfBlankDays;
+  
+  currentDate = $(e.target).attr("value").split("-");
+  currentDay = currentDate[0];
+  currentMonth = currentDate[1]-1;
+  currentYear = currentDate[2];
+  currentDate = new Date( currentDate[1]+"-"+currentDate[0]+"-"+currentDate[2] );
+  numOfBlankDays = E.day_of_the_week[ currentDate.toString().split(" ")[0] ];
+  
+  $(e.target).after("<div class='calendar'><div class='cal_header'>"+E.months[currentMonth]+" "+currentYear+"</div><div class='dates'></div><div class='cal_footer'>Go to Today</div></div>");  
+  dates = $(e.target).next("div.calendar:first").children("div.dates:first");
+  day = 0;
   month =[];  
   
-  for( day = 1; day <= 31; day++ ){
-    month.push("<span class='day'>"+day+"</span>");
+  while( day < numOfBlankDays){
+    month.push("<span class='day'></span>");
+    day = day + 1;
+  }
+  
+  for( day = 1; day <= E.num_of_days_in_the_month[currentMonth]; day++ ){
+      month.push("<span class='day'>"+day+"</span>");
   }
 
   $(dates).html( month.join(" ") );
