@@ -247,18 +247,23 @@ $("input.date").live("focus", function(e){
   // find out which month
   // find out which year
   // find out on what day does the month starts
-  // find out how many days does the current month has.
-  $(this).addClass("selected");
-  
-  var currentDay, currentMonth, currentYear, currentDate,dates, day, numOfBlankDays;
+  // find out how many days does the current month has.  
+  var currentDay, currentMonth, currentYear, currentDate, dates, day, numOfBlankDays, firstDate;
   
   currentDate = $(e.target).attr("value").split("-");
   currentDay = currentDate[0];
   currentMonth = currentDate[1]-1;
   currentYear = currentDate[2];
   currentDate = new Date( currentDate[1]+"-"+currentDate[0]+"-"+currentDate[2] );
-
-  numOfBlankDays = E.day_of_the_week[ currentDate.toString().split(" ")[0] ];
+  firstDate = new Date( ( currentMonth+1)+"-1-"+currentYear);
+  
+  console.log( currentDate );
+  console.log( firstDate );
+  
+  numOfBlankDays = E.day_of_the_week[ firstDate.toString().split(" ")[0] ];
+  console.log( firstDate.toString().split(" ")[0] );
+  console.log( E.day_of_the_week[ firstDate.toString().split(" ")[0] ]  );
+  console.log( numOfBlankDays );
   numOfMonthDays = 0;
   
   if( E.isLeapYear(currentYear) && ( currentMonth === 1 ) ){
@@ -269,10 +274,10 @@ $("input.date").live("focus", function(e){
 
   $(e.target).after("<div class='calendar'><a href='#' class='close'>X</a><div class='cal_header'>"+E.months[currentMonth]+" "+currentYear+"</div><div class='dates'></div><div class='cal_footer'>Go to Today</div></div>");  
   dates = $(e.target).next("div.calendar:first").children("div.dates:first");
-  day = 0;
+  day = 1;
   month =[];  
   
-  while( day < numOfBlankDays){
+  while( day <= numOfBlankDays){
     month.push("<a href='#' class='day'></a>");
     day = day + 1;
   }
