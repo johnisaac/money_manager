@@ -215,8 +215,12 @@ window.E = {
     }
   },
   
-  getDay: function(){
-    
+  isLeapYear: function(year){
+    if( ( year%4 === 0 ) && ( year %100 === 0) && ( year % 400 === 0 ) ){
+      return true;
+    } else{
+      return false;
+    }
   }
 }
 
@@ -235,8 +239,16 @@ $("input.date").live("focus", function(e){
   currentMonth = currentDate[1]-1;
   currentYear = currentDate[2];
   currentDate = new Date( currentDate[1]+"-"+currentDate[0]+"-"+currentDate[2] );
+
   numOfBlankDays = E.day_of_the_week[ currentDate.toString().split(" ")[0] ];
+  numOfMonthDays = 0;
   
+  if( E.isLeapYear(currentYear) && ( currentMonth === 1 ) ){
+    numOfMonthDays = parseInt(E.num_of_days_in_the_month[currentMonth]) + 1;
+  } else {
+    numOfMonthDays = E.num_of_days_in_the_month[currentMonth];
+  }
+
   $(e.target).after("<div class='calendar'><div class='cal_header'>"+E.months[currentMonth]+" "+currentYear+"</div><div class='dates'></div><div class='cal_footer'>Go to Today</div></div>");  
   dates = $(e.target).next("div.calendar:first").children("div.dates:first");
   day = 0;
@@ -247,8 +259,12 @@ $("input.date").live("focus", function(e){
     day = day + 1;
   }
   
-  for( day = 1; day <= E.num_of_days_in_the_month[currentMonth]; day++ ){
+  for( day = 1; day <= numOfMonthDays; day++ ){
+    if( day === parseInt( currentDay) ){
+      month.push("<span class='day today'>"+day+"</span>");
+    } else{
       month.push("<span class='day'>"+day+"</span>");
+    }
   }
 
   $(dates).html( month.join(" ") );

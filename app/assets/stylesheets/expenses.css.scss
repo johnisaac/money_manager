@@ -201,6 +201,17 @@ div.calendar{
       border-right: 1px solid black;
       border-bottom: 1px solid black;
     }
+    
+    span.today{
+      width: 30px;
+      float: left;
+      min-width: 29px;
+      text-align: center;
+      min-height: 24px;
+      border-right: 1px solid black;
+      border-bottom: 1px solid black;
+      background-color: lightyellow;
+    }
   }
   
   div.cal_footer{
