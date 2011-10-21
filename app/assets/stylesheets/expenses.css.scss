@@ -196,6 +196,32 @@ div.calendar{
     -webkit-border-radius: 15px;
   }
   
+  span.prev_month{
+    width: 0px;
+    height: 0px;
+    border-width: 7px;
+    border-style: solid;
+    position: absolute;
+    top: 5px;
+    border-color: transparent black transparent transparent;
+    left: 0px;
+  }
+  
+  span.next_month{
+    width: 0px;
+    height: 0px;
+    border-width: 7px;
+    border-style: solid;
+    border-color: transparent transparent transparent black;
+    position: absolute;
+    top: 5px;
+    right:0px;
+  }
+  
+  span.prev_month:hover, span.next_month:hover{
+    cursor: pointer;
+  }
+  
   div.cal_header{
     border-bottom:1px solid black;
     border-right: 1px solid black;
@@ -203,6 +229,7 @@ div.calendar{
     height:25px;
     background-color: #FFFFFF;
     text-align: center;
+    margin-top: 3px;
   }
   
   div.dates{

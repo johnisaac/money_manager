@@ -268,19 +268,19 @@ $.fn.calendar = function(e){
     var currentDay, currentMonth, currentYear, currentDate, dates, day, numOfBlankDays, firstDate;
 
     currentDate = $(e.target).attr("value").split("-");
-    currentDay = currentDate[0];
-    currentMonth = currentDate[1]-1;
-    currentYear = currentDate[2];
-    currentDate = new Date( currentDate[1]+"-"+currentDate[0]+"-"+currentDate[2] );
+    if( currentDate.length === 3){
+      currentDay = currentDate[0];
+      currentMonth = currentDate[1]-1;
+      currentYear = currentDate[2];
+    } else{
+      currentDate = E.today().split("-");
+      currentDay = currentDate[2];
+      currentMonth = currentDate[1]-1;
+      currentYear = currentDate[0];
+    }
+    currentDate = new Date( ( currentMonth+1)+"-"+currentDay+"-"+currentYear );
     firstDate = new Date( ( currentMonth+1)+"-1-"+currentYear);
-
-    console.log( currentDate );
-    console.log( firstDate );
-
     numOfBlankDays = E.day_of_the_week[ firstDate.toString().split(" ")[0] ];
-    console.log( firstDate.toString().split(" ")[0] );
-    console.log( E.day_of_the_week[ firstDate.toString().split(" ")[0] ]  );
-    console.log( numOfBlankDays );
     numOfMonthDays = 0;
 
     if( E.isLeapYear(currentYear) && ( currentMonth === 1 ) ){
@@ -289,7 +289,7 @@ $.fn.calendar = function(e){
       numOfMonthDays = E.num_of_days_in_the_month[currentMonth];
     }
 
-    $(e.target).after("<div class='calendar'><a href='#' class='close'>X</a><div class='cal_header'>"+E.months[currentMonth]+" "+currentYear+"</div><div class='dates'></div><div class='cal_footer'>Go to Today</div></div>");  
+    $(e.target).after("<div class='calendar'><span class='prev_month'></span><a href='#' class='close'>X</a><div class='cal_header'>"+E.months[currentMonth]+" "+currentYear+"</div><span class='next_month'></span><div class='dates'></div><div class='cal_footer'>Go to Today</div></div>");  
     dates = $(e.target).next("div.calendar:first").children("div.dates:first");
     day = 1;
     month =[];  
@@ -328,9 +328,19 @@ $.fn.calendar = function(e){
   });
 
   $("div.calendar  a.close").live("click", function(e){
-    var el;
+    var el, currentVal, currentDay, currentMonth, currentYear, date;
 
-    el = $(e.target).parents("div.calendar:first")
+    el = $(e.target).parents("div.calendar:first");
+    currentVal = $(el).prev("input.date:first");
+    date = new Date($(currentVal).attr("value"));
+
+    if( date == "Invalid Date"){
+      date = E.today().split("-");
+      currentDate = date[2]+"-"+date[1]+"-"+date[0];
+      $(currentVal).attr("value", currentDate );      
+    }
+
+
     $(el).remove();
 
     e.preventDefault();
