@@ -56,11 +56,11 @@ class ExpensesController < ApplicationController
 
     respond_to do |format|
       if @expense.update_attributes(params[:expense])
-        format.html { redirect_to @expense, notice: 'Expense was successfully updated.' }
-        format.json { head :ok }
+        format.html { render :json => @expense, notice: 'Expense was successfully updated.' }
+        format.json { render :json => @expense, :status => 200, :location => @expense }
       else
         format.html { render action: "edit" }
-        format.json { render json: @expense, status: :unprocessable_entity }
+        format.json { render json: @expense.errors, status: :unprocessable_entity }
       end
     end
   end
@@ -78,7 +78,7 @@ class ExpensesController < ApplicationController
   end
   
   def get_expenses
-    @expenses = Expense.order("updated_at desc").all
+    @expenses = Expense.get_expense(params["month"], params["year"]).order("spent_on desc").all
 
      respond_to do |format|
        format.html { render :json => @expenses }

@@ -2,13 +2,51 @@
 // They will automatically be included in application.css.
 // You can use Sass (SCSS) here: http://sass-lang.com/
 
+#nav{
+  a.nav{
+    text-decoration: none;
+    display: block;
+    height: 20px;
+    border: 1px solid black;
+    text-align: center;
+    padding-top: 7px;
+  }
+  
+  a.nav:hover{
+    color: white;
+  }
+}
+
+#control_bar{
+  display:none;
+}
+
 ul#expenses{
   list-style-type: none;
-  margin: 0 auto;
+  margin: 0px;
+  padding: 0px;
+  position: relative;
+  float: right;
   
-  li{
+  li:nth-child(odd){ 
+    background-color:#eee;
+    
+    input[type='text']{
+      background-color: #eee;
+    }
+  }
+  
+  li:nth-child(even){ 
+    background-color:#fff; 
+  }  
+  
+  li.header{
     border-top: 1px solid black;
     border-bottom: 1px solid black;
+    margin-bottom: 1px;
+  }
+  
+  li{
     margin-top: -1px;
     min-height: 25px;
     min-width: 100%;
@@ -141,16 +179,14 @@ ul#expenses{
   }
   
   h2{
-    margin-left: 5px;
-    position: relative;
-    left: 35px;
     margin-bottom: 0px;
     padding-bottom: 0px;
   }
   
   #add_transaction{
-    margin-left: 40px;
-    margin-top : 50px;
+    position: absolute;
+    right: 0px;
+    top: 90px;
     text-decoration: none;
     border: 1px solid black;
     text-align: center;

@@ -35,4 +35,13 @@ class ExpenseTest < ActiveSupport::TestCase
     assert exp.valid?,"Expense should accept a valid expense"
   end
   
+  def test_start_date_should_return_beginning_date
+    date = Expense.start_date(12, 2008)
+    assert date == "2008-12-01"
+  end
+  
+  def test_end_date_should_return_month_ending_date
+    date = Expense.end_date(12, 2008)
+    assert date == "2008-12-31"
+  end
 end
