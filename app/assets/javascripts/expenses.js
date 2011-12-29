@@ -2,6 +2,7 @@
 // All this logic will automatically be available in application.js.
  
 $(document).ready( function(){
+  
 window.E = {
   date: function(){
     var d = new Date(),
@@ -33,6 +34,7 @@ window.E = {
     "Fri":5,
     "Sat":6
   },
+  
   months_in_a_year:{
     "Jan":"01",
     "Feb":"02",
@@ -47,6 +49,7 @@ window.E = {
     "Nov":11,
     "Dec":12
   },
+  
   num_of_days_in_the_month:["31","28","31","30","31","30","31","31","30","31","30","31"],
   expenses_list: [],
   earnings: 0,
@@ -112,7 +115,7 @@ window.E = {
     // register uiEvents
     $("#add_transaction").live("click", this.uiEvents.addTransaction );
     $("li.expense a.delete").live("click", this.uiEvents.removeTransaction );
-    $("li.expense input[type='text']").live("blur", this.uiEvents.checkAmount );
+    $("li.expense input.amount").live("blur", this.uiEvents.checkAmount );
     $("li.expense").live("mouseenter", this.uiEvents.showDeleteLink).live("mouseleave", this.uiEvents.hideDeleteLink);
     $("#view_history").live("click", this.uiEvents.loadHistory );
     $("#current_month").live("click", this.uiEvents.loadCurrentMonth);
@@ -304,16 +307,13 @@ window.E = {
       event.preventDefault();
       $("#expenses").children("li.expense").remove();
       $("#control_bar").toggle();
-      // hide the 
     },
     
     loadCurrentMonth: function(event){
       event.preventDefault();
       $("#expenses").children("li.expense").remove();
       $("#header").children("h2:first").html(E.date().currentMonth()+" "+E.date().currentYear()+" Balance Summary");
-      
-      current_month
-      E.loadExpenses();
+          E.loadExpenses();
       $("#control_bar").toggle();
     }
   },
@@ -365,14 +365,15 @@ window.E = {
   
   addExpense: function(expense){
       if( ( expense !== null) && ( typeof expense === "object") ){
-      E.expenses_list.push( expense );
-      $("#expenses").append( E.expenseTemplate(expense) );
-    }
+        E.expenses_list.push( expense );
+        $("#expenses").append( E.expenseTemplate(expense) );
+      }
   }
-}
+};
 
 E.init();
 $("input.date").calendar();
+
 });
 
 

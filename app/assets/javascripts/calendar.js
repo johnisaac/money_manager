@@ -138,7 +138,6 @@ $.fn.calendar = function(){
       }
 
      function formattedMonth( month ){
-       console.log( currentFormat )
        if( currentFormat !== "DD-MON-YYYY"){
          return parseInt( getMonthIndex( currentMonth || month ) )+1;
        } else if( currentFormat === "DD-MM-YYYY"){
@@ -147,11 +146,36 @@ $.fn.calendar = function(){
      }
 
      function onDayClick(e){
+       var expenseID, expense, date;
+       
+       expense = $(e.target).parents("div.calendar:first").prev("input.date:first").parent("li.expense");
+       expenseID = $(expense).attr("id").split("_")[1];
+       console.log( expenseID );
        currentDayIndex = $(e.target).html();
+       console.log( $(e.target).parents("div.calendar:first").prev("input.date:first") );
        $(e.target).parents("div.calendar:first").prev("input.date:first").attr("value", [ currentDayIndex, formattedMonth(), currentYear ].join("-") );
+       date = [ currentDayIndex, formattedMonth(), currentYear ].join("-");
        $(el).remove();
-
+       
+       $.ajax({
+          url:"/expenses/"+expenseID,
+          type: "PUT",
+          data:"[expense][spent_on]="+date,
+          dataType: "json",
+          success: function(data){
+            console.log("success");
+          },
+          failure: function(data){
+            console.log("failure");
+          },
+          error: function(data){
+            console.log( data );
+            console.log("error");
+          }
+       });
+              
        e.preventDefault();
+       //return [ currentDayIndex, formattedMonth(), currentYear ].join("-");
        return false;
      }
 
@@ -163,7 +187,7 @@ $.fn.calendar = function(){
 
      function onFocus(e){
        var currentDate = $(e.target).attr("value").split("-");
-       console.log( typeof createCalendar );
+
        createCalendar( e.target );
        //jCal.currentFormat = "DD-MM-YYYY";
        if( ( currentDate.length === 3 ) && ( currentFormat == "DD-MON-YYYY") ){
@@ -184,8 +208,7 @@ $.fn.calendar = function(){
      }
 
      function onBlur(e){
-       console.log( e );
-       //$(el).remove();
+       e.preventDefault();
      }
 
    currentDate();
