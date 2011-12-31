@@ -56,8 +56,8 @@ window.E = {
   expenses: 0,
   netAmount: 0,
   navigation: "<nav id='nav' class='grid_3'>\
-      <a href='#' id='current_month' class='nav class='grid_3' clearfix'></a>\
-      <a href='#' id='view_history' class='nav class='grid_3' clearfix'> View History </a>\
+      <a href='#' id='current_month' class='nav grid_3'></a>\
+      <a href='#' id='view_history' class='nav grid_3'> View History </a>\
     </nav>",
   headerTemplate: "<header id='header' class='prefix_3 grid_21 clearfix'>\
      <h2></h2>\
@@ -115,7 +115,8 @@ window.E = {
     // register uiEvents
     $("#add_transaction").live("click", this.uiEvents.addTransaction );
     $("li.expense a.delete").live("click", this.uiEvents.removeTransaction );
-    $("li.expense input.amount").live("blur", this.uiEvents.checkAmount );
+    $("li.expense input.amount").live("blur", this.uiEvents.updateAmount );
+    $("li.expense input.reason").live("blur", this.uiEvents.updateReason );
     $("li.expense").live("mouseenter", this.uiEvents.showDeleteLink).live("mouseleave", this.uiEvents.hideDeleteLink);
     $("#view_history").live("click", this.uiEvents.loadHistory );
     $("#current_month").live("click", this.uiEvents.loadCurrentMonth);
@@ -123,7 +124,9 @@ window.E = {
     E.loadControls();
     E.loadExpenses();
     $("#header").children("h2:first").html( E.date().currentMonth()+" "+E.date().currentYear()+" Balance Summary");
-    $("#nav").children("a:first").html( E.date().currentMonth()+" "+E.date().currentYear());
+    $("#current_month").html( E.date().currentMonth()+" "+E.date().currentYear());
+    $("#current_month").addClass("active");
+    
   },
   
   resetBalanceSheet: function(){
@@ -222,13 +225,15 @@ window.E = {
       return false;
     },
     
-    checkAmount: function(e){
-      var id = $(e.target).parents("li.expense:first").attr("id").split("_")[1];
-          reason = $("#expense_"+id).find("input.reason:first").attr("value");
-          date = $("#expense_"+id).find("input.date:first").attr("value");
-          amount = $("#expense_"+id).find("input.amount:first").attr("value");
+    updateAmount: function(e){
+      var id, reason, date, amount;
+      
+      id = $(e.target).parents("li.expense:first").attr("id").split("_")[1];
+      reason = $("#expense_"+id).find("input.reason:first").attr("value");
+      date = $("#expense_"+id).find("input.date:first").attr("value");
+      amount = $("#expense_"+id).find("input.amount:first").attr("value");
     
-      if ( isNaN(parseFloat(amount) ) && ( $(e.target).hasClass("amount") ) ){
+      if ( isNaN(parseFloat(amount) ) ){
         var errorMessage = "<span class='invalid_entry'><span class='arrow-border'></span><span class='text'>Amount needs to be a number like 1000</span></span>";
         $(e.target).after(errorMessage);
         $(e.target).parents("li.expense").children("span.invalid_entry").show();
@@ -255,6 +260,33 @@ window.E = {
           });
         }
       }
+    },
+    
+    updateReason: function(e){
+      var id, reason, date, amount;
+      
+      id = $(e.target).parents("li.expense:first").attr("id").split("_")[1];
+      reason = $("#expense_"+id).find("input.reason:first").attr("value");
+      date = $("#expense_"+id).find("input.date:first").attr("value");
+      amount = $("#expense_"+id).find("input.amount:first").attr("value");
+          
+      $.ajax({
+        url:"/expenses/"+id,
+        type: "PUT",
+        data:"[expense][reason]="+reason+"&[expense][spent_on]="+date+"&[expense][amount]="+amount,
+        dataType: "json",
+        success: function(data){
+          console.log("success");
+        },
+        failure: function(data){
+          console.log("failure");
+        },
+        error: function(data){
+          console.log( data );
+          console.log("error");
+        }
+      });
+      
     },
     
     loadMonthAndYear: function( event ){
@@ -306,12 +338,16 @@ window.E = {
     loadHistory: function(event){
       event.preventDefault();
       $("#expenses").children("li.expense").remove();
+      $("#nav").find("a.nav").removeClass("active")
+      $(event.target).addClass("active");
       $("#control_bar").toggle();
     },
     
     loadCurrentMonth: function(event){
       event.preventDefault();
       $("#expenses").children("li.expense").remove();
+      $("#nav").find("a.nav").removeClass("active")
+      $(event.target).addClass("active");
       $("#header").children("h2:first").html(E.date().currentMonth()+" "+E.date().currentYear()+" Balance Summary");
           E.loadExpenses();
       $("#control_bar").toggle();

@@ -1,4 +1,5 @@
 $.fn.calendar = function(){
+  "use strict";
   var el, dateEl, numOfDaysInMonths, daysOfTheWeek, monthsOfTheYear, currentDayIndex, currentMonth, currentYear, currentDay, currentFormat, dateFormat;
 
   el =  null;
@@ -11,16 +12,44 @@ $.fn.calendar = function(){
   currentYear = 2011;
   currentDay = 'Sun';
   currentFormat ="DD-MM-YYYY";
-  dateFormat:[ "DD-MM-YYYY","DD-MON-YYYY"];
+  dateFormat = [ "DD-MM-YYYY","DD-MON-YYYY"];
 
   function createCalendar(element){
-      $(element).after("<div class='calendar'><span class='prev_month'></span><a href='#' class='close'>X</a><div class='cal_header'></div><span class='next_month'></span><div class='dates'></div><div class='cal_footer'>Go to Today</div></div>");    
+      //<div class='cal_footer'>Go to Today</div>
+      $(element).after("<div class='calendar'><div class='cal_header'><span class='prev_month'></span><span class='month_year'></span><span class='next_month'></span><a href='#' class='close'>X</a></div><div class='dates'></div></div>");    
       el = $(element).next("div.calendar:first");
-      console.log( $(dateEl) );
   }
 
+   function blankDays( day ){
+     var i=0;
+     for( i = 0; i < 7; i++ ){
+       if( daysOfTheWeek[i] === day ){
+         return i;
+       }
+     }
+     return undefined;
+   }
+  
+   function isLeapYear(year){
+       if( ( year%4 === 0 ) && ( year %100 === 0) && ( year % 400 === 0 ) ){
+         return true;
+       } else{
+         return false;
+       }
+   }
+
+   function getMonthIndex( monthName ){
+       var i;
+       for( i = 0; i < 12; i++ ){
+          if( monthsOfTheYear[i] === monthName){
+            return i;
+          }
+        }
+       return undefined;
+   }
+
   function loadCalendarData(loadMonth, loadDay, loadYear){
-      var firstDate, numOfBlankDays, numOfMonthDays, day;
+      var firstDate, numOfBlankDays, numOfMonthDays, day, month, dates;
       numOfMonthDays = 0;
 
       firstDate = new Date( [ loadMonth,"1",loadYear].join("-"));
@@ -42,45 +71,15 @@ $.fn.calendar = function(){
       }
 
       for( day = 1; day <= numOfMonthDays; day++ ){
-        if( day === parseInt( loadDay) ){
+        if( day === parseInt( loadDay, 10) ){
           month.push("<a href='#' class='day today'>"+day+"</a>");
         } else{
           month.push("<a href='#' class='day'>"+day+"</a>");
         }
       }
-      console.log( el );
-      $(el).children("div.cal_header:first").html( currentMonth+" "+ currentYear );
+      $(el).children("div.cal_header:first").children("span.month_year:first").html( currentMonth+" "+ currentYear );
       $(dates).html( month.join(" ") );
   }
-
-   function blankDays( day ){
-     var i=0;
-     for( i = 0; i < 7; i++ ){
-       if( daysOfTheWeek[i] == day ){
-         return i;
-         break;
-       }
-     }
-     return undefined;
-   }
-
-   function isLeapYear(year){
-       if( ( year%4 === 0 ) && ( year %100 === 0) && ( year % 400 === 0 ) ){
-         return true;
-       } else{
-         return false;
-       }
-   }
-
-   function getMonthIndex( monthName ){
-       for( i = 0; i < 12; i++ ){
-          if( monthsOfTheYear[i] == monthName){
-            return i;
-            break;
-          }
-        }
-       return undefined;
-   }
 
    function currentDate(){
        var d = new Date();
@@ -94,8 +93,8 @@ $.fn.calendar = function(){
     function prevMonth(){
        var currentMonthIndex, i;
        for( i = 0; i < 12; i++ ){
-         if( monthsOfTheYear[i] == currentMonth){
-           if( i == 0){
+         if( monthsOfTheYear[i] === currentMonth){
+           if( i === 0){
              currentMonth = monthsOfTheYear[11];
              currentYear = parseFloat( currentYear ) - 1;
            } else{
@@ -107,9 +106,10 @@ $.fn.calendar = function(){
      }
      
      function nextMonth(){
+       var i;
        for( i = 0; i < 12; i++ ){
-         if( monthsOfTheYear[i] == currentMonth){
-           if( i == 11){
+         if( monthsOfTheYear[i] === currentMonth){
+           if( i === 11){
              currentMonth = monthsOfTheYear[0];
              currentYear = parseFloat( currentYear ) + 1;
            } else{
@@ -121,7 +121,6 @@ $.fn.calendar = function(){
      }
      
      function onClickPrevMonth(e){
-       console.log("inside");
        prevMonth();
        loadCalendarData( currentMonth, currentDayIndex, currentYear );
 
@@ -139,7 +138,7 @@ $.fn.calendar = function(){
 
      function formattedMonth( month ){
        if( currentFormat !== "DD-MON-YYYY"){
-         return parseInt( getMonthIndex( currentMonth || month ) )+1;
+         return parseInt( getMonthIndex( currentMonth || month ), 10 )+1;
        } else if( currentFormat === "DD-MM-YYYY"){
          return currentMonth || month;
        }
@@ -150,10 +149,10 @@ $.fn.calendar = function(){
        
        expense = $(e.target).parents("div.calendar:first").prev("input.date:first").parent("li.expense");
        expenseID = $(expense).attr("id").split("_")[1];
-       console.log( expenseID );
        currentDayIndex = $(e.target).html();
-       console.log( $(e.target).parents("div.calendar:first").prev("input.date:first") );
        $(e.target).parents("div.calendar:first").prev("input.date:first").attr("value", [ currentDayIndex, formattedMonth(), currentYear ].join("-") );
+       $(e.target).parents("div.calendar:first").prev("input.date:first").removeAttr("disabled");
+       $(e.target).parents("div.calendar:first").prev("input.date:first").blur();
        date = [ currentDayIndex, formattedMonth(), currentYear ].join("-");
        $(el).remove();
        
@@ -180,28 +179,42 @@ $.fn.calendar = function(){
      }
 
      function onClose(e){
+       $(e.target).parents("div.calendar:first").prev("input.date:first").removeAttr("disabled");
+       $(e.target).parents("div.calendar:first").prev("input.date:first").blur();
        $(e.target).parents("div.calendar:first").remove();
        e.preventDefault();
        return false;
      }
 
+     function checkCalendarCount(){
+       if( ( $(dateEl) !== null ) && ( $(dateEl) !== undefined) ){
+         if( $(dateEl).parent("li.expense:first").children("div.calendar") === 0 ){
+           return false;
+         } else{
+           return true;
+         }
+       }
+     }
+     
      function onFocus(e){
+       $(e.target).attr("disabled","");
        var currentDate = $(e.target).attr("value").split("-");
-
-       createCalendar( e.target );
-       //jCal.currentFormat = "DD-MM-YYYY";
-       if( ( currentDate.length === 3 ) && ( currentFormat == "DD-MON-YYYY") ){
+       if ( checkCalendarCount() ){
+         $("div.calendar").remove();
+         createCalendar( e.target );
+       }
+       
+       if( ( currentDate.length === 3 ) && ( currentFormat === "DD-MON-YYYY") ){
          currentMonth = formattedMonth( currentDate[1] );
          currentDayIndex = currentDate[0];
          currentYear = currentDate[2];
-       } else if(  ( currentDate.length === 3 ) && ( currentFormat == "DD-MM-YYYY") ){
-         currentMonth = monthsOfTheYear[ parseInt( currentDate[1] )-1 ];
+       } else if(  ( currentDate.length === 3 ) && ( currentFormat === "DD-MM-YYYY") ){
+         currentMonth = monthsOfTheYear[ parseInt( currentDate[1], 10 )-1 ];
          currentDayIndex = currentDate[0];
          currentYear = currentDate[2];
        }
 
        loadCalendarData( currentMonth, currentDayIndex, currentYear );
-       console.log( $(dateEl) );
        
        e.preventDefault();
        return false;
@@ -209,6 +222,7 @@ $.fn.calendar = function(){
 
      function onBlur(e){
        e.preventDefault();
+       $(e.target).removeAttr("disabled");
      }
 
    currentDate();
