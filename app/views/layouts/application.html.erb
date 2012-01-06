@@ -7,18 +7,18 @@
 </head>
 <body>
 <div class='container_24'>
- 
-  <!--
-  
-<%= yield %>
--->
-<%= javascript_include_tag "jquery","calendar","expenses" %>
-<script>
-  if( typeof jQuery == "undefined"){
-    // load cdn here
-  } else{
+  <% if user_signed_in? %>
+    <%= javascript_include_tag "jquery","calendar","expenses" %>
+    <%=link_to "Sign out", destroy_session_path %>
+  <% else %>
+    <%=link_to "Sign in thru Twitter", "/auth/twitter"%>
+  <% end %>
+  <script>
+    if( typeof jQuery == "undefined"){
+      // load cdn here
+    } else{
     
-  }
+    }
 </script>
 </div>
 

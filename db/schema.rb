@@ -11,12 +11,23 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20111017100403) do
+ActiveRecord::Schema.define(:version => 20120106091132) do
 
   create_table "expenses", :force => true do |t|
     t.string   "reason"
     t.datetime "spent_on"
     t.float    "amount"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.integer  "user_id"
+  end
+
+  create_table "users", :force => true do |t|
+    t.string   "first_name",  :null => false
+    t.string   "last_name"
+    t.string   "email"
+    t.string   "omniauth_id", :null => false
+    t.string   "provider",    :null => false
     t.datetime "created_at"
     t.datetime "updated_at"
   end

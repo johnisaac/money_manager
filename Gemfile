@@ -1,12 +1,14 @@
 source 'http://rubygems.org'
 
 gem 'rails', '3.1.1'
-
+gem 'omniauth-twitter'
+gem 'twitter'
 # Bundle edge Rails instead:
 # gem 'rails',     :git => 'git://github.com/rails/rails.git'
 group :test, :development do
   gem 'sqlite3'
   gem "minitest"
+  gem "factory_girl_rails"
 end
 
 # Gems used only for assets and not required

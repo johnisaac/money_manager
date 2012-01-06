@@ -158,8 +158,8 @@ window.E = {
   loadYear: function(){
     var arr_year, i, year;
     arr_year = ["<select id='history_year'>"];
-    i = 2011;
-    for( i = 2011; i >= 1900; i-- ){
+    i = 2012;
+    for( i = 2012; i >= 1900; i-- ){
       arr_year.push( "<option value="+i+">"+i+"</option>" );
     }
     arr_year.push("</select>");
@@ -298,7 +298,7 @@ window.E = {
       month = $("#history_month").val();
       
       $.ajax({
-        url: "expenses/get_expenses",
+        url: "/expenses/get_expenses",
         data: "month="+month+"&year="+year,
         success: function(data){
           E.resetBalanceSheet();
@@ -359,7 +359,7 @@ window.E = {
     var currentYear = E.date().currentYear();
     
     $.ajax({
-      url: "expenses/get_expenses",
+      url: "/expenses/get_expenses",
       data: "month="+currentMonth+"&year="+currentYear,
       success: function(data){
         var data = JSON.parse(data),

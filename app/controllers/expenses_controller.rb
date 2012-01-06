@@ -35,6 +35,7 @@ class ExpensesController < ApplicationController
   # POST /expenses
   # POST /expenses.json
   def create
+    params[:expense][:user_id] = session[:id]
     @expense = Expense.new(params[:expense])
     
     respond_to do |format|
@@ -78,10 +79,11 @@ class ExpensesController < ApplicationController
   end
   
   def get_expenses
-    @expenses = Expense.get_expense(params["month"], params["year"]).order("spent_on desc").all
+    @expenses = Expense.get_expense( session[:id], params["month"], params["year"]).order("spent_on desc").all
 
      respond_to do |format|
        format.html { render :json => @expenses }
      end
   end
+  
 end
