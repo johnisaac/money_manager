@@ -9,6 +9,8 @@ group :test, :development do
   gem "minitest"
 end
 
+gem 'execjs'
+gem 'therubyracer'
 # Gems used only for assets and not required
 # in production environments by default.
 group :assets do
